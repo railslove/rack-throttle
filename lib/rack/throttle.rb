@@ -8,5 +8,6 @@ module Rack
     autoload :Daily,      'rack/throttle/daily'
     autoload :Hourly,     'rack/throttle/hourly'
     autoload :VERSION,    'rack/throttle/version'
+    autoload :PerMinute,  'rack/throttle/per_minute'
   end
 end

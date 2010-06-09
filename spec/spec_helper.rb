@@ -1,4 +1,8 @@
+# So that the installed throttle gem doesnt interfere
+$:.unshift(File.expand_path(File.dirname(__FILE__) + "/../lib"))
+
 require "spec"
+require 'spec/autorun'
 require "rack/test"
 require "rack/throttle"
 
@@ -11,34 +15,34 @@ Spec::Matchers.define :show_allowed_response do
   match do |body|
     body.include?("Example App Body")
   end
-  
+
   failure_message_for_should do
-    "expected response to show the allowed response" 
-  end 
+    "expected response to show the allowed response"
+  end
 
   failure_message_for_should_not do
-    "expected response not to show the allowed response" 
+    "expected response not to show the allowed response"
   end
-  
+
   description do
     "expected the allowed response"
-  end 
+  end
 end
 
 Spec::Matchers.define :show_throttled_response do
   match do |body|
     body.include?("Rate Limit Exceeded")
   end
-  
+
   failure_message_for_should do
-    "expected response to show the throttled response" 
-  end 
+    "expected response to show the throttled response"
+  end
 
   failure_message_for_should_not do
-    "expected response not to show the throttled response" 
+    "expected response not to show the throttled response"
   end
-  
+
   description do
     "expected the throttled response"
-  end 
+  end
 end

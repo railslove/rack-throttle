@@ -2,10 +2,10 @@ require File.dirname(__FILE__) + '/spec_helper'
 
 def app
   @target_app ||= example_target_app
-  @app ||= Rack::Throttle::Hourly.new(@target_app, :max_per_hour => 3)
+  @app ||= Rack::Throttle::PerMinute.new(@target_app, :max_per_minute => 3)
 end
 
-describe Rack::Throttle::Hourly do
+describe Rack::Throttle::PerMinute do
   include Rack::Test::Methods
 
   it "should be allowed if not seen this hour" do
@@ -23,13 +23,13 @@ describe Rack::Throttle::Hourly do
     last_response.body.should show_throttled_response
   end
 
-  it "should be allowed if we are in a new hour" do
+  it "should be allowed if we are in a new minute" do
     Time.stub!(:now).and_return(Time.local(2000,"jan",1,0,0,0))
 
     4.times { get "/foo" }
     last_response.body.should show_throttled_response
 
-    forward_one_minute = Time.now + 60*60
+    forward_one_minute = Time.now + 60
     Time.stub!(:now).and_return(forward_one_minute)
 
     get "/foo"

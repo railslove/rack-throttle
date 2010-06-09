@@ -12,16 +12,27 @@ describe Rack::Throttle::Daily do
     get "/foo"
     last_response.body.should show_allowed_response
   end
-  
+
   it "should be allowed if seen fewer than the max allowed per day" do
     2.times { get "/foo" }
     last_response.body.should show_allowed_response
   end
-  
+
   it "should not be allowed if seen more times than the max allowed per day" do
     4.times { get "/foo" }
     last_response.body.should show_throttled_response
   end
-  
-  # TODO mess with time travelling and requests to make sure no overlap
+
+  it "should be allowed if we are in a new day" do
+    Time.stub!(:now).and_return(Time.local(2000,"jan",1,0,0,0))
+
+    4.times { get "/foo" }
+    last_response.body.should show_throttled_response
+
+    forward_one_minute = Time.now + 60*60*24
+    Time.stub!(:now).and_return(forward_one_minute)
+
+    get "/foo"
+    last_response.body.should show_allowed_response
+  end
 end
