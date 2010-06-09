@@ -32,7 +32,7 @@ Examples
 
     # config/application.rb
     require 'rack/throttle'
-    
+
     class Application < Rails::Application
       config.middleware.use Rack::Throttle::Interval
     end
@@ -42,18 +42,18 @@ Examples
     #!/usr/bin/env ruby -rubygems
     require 'sinatra'
     require 'rack/throttle'
-    
+
     use Rack::Throttle::Interval
-    
+
     get('/hello') { "Hello, world!\n" }
 
 ### Adding throttling to a Rackup application
 
     #!/usr/bin/env rackup
     require 'rack/throttle'
-    
+
     use Rack::Throttle::Interval
-    
+
     run lambda { |env| [200, {'Content-Type' => 'text/plain'}, "Hello, world!\n"] }
 
 ### Enforcing a minimum 3-second interval between requests
@@ -68,28 +68,33 @@ Examples
 
     use Rack::Throttle::Daily,    :max => 1000
 
+### Allowing a maximum of 60 requests per minute
+
+    use Rack::Throttle::PerMinute,    :max => 60
+
 ### Combining various throttling constraints into one overall policy
 
-    use Rack::Throttle::Daily,    :max => 1000  # requests
-    use Rack::Throttle::Hourly,   :max => 100   # requests
-    use Rack::Throttle::Interval, :min => 3.0   # seconds
+    use Rack::Throttle::Daily,     :max => 1000  # requests
+    use Rack::Throttle::Hourly,    :max => 100   # requests
+    use Rack::Throttle::PerMinute, :max => 60    # requests
+    use Rack::Throttle::Interval,  :min => 3.0   # seconds
 
 ### Storing the rate-limiting counters in a GDBM database
 
     require 'gdbm'
-    
+
     use Rack::Throttle::Interval, :cache => GDBM.new('tmp/throttle.db')
 
 ### Storing the rate-limiting counters on a Memcached server
 
     require 'memcached'
-    
+
     use Rack::Throttle::Interval, :cache => Memcached.new, :key_prefix => :throttle
 
 ### Storing the rate-limiting counters on a Redis server
 
     require 'redis'
-    
+
     use Rack::Throttle::Interval, :cache => Redis.new, :key_prefix => :throttle
 
 Throttling Strategies
@@ -106,6 +111,10 @@ Throttling Strategies
 * `Rack::Throttle::Daily`: Throttles the application by defining a
   maximum number of allowed HTTP requests per day (by default, 86,400
   requests per 24 hours, which works out to an average of 1 request per
+  second).
+* `Rack::Throttle::PerMinute`: Throttles the application by defining a
+  maximum number of allowed HTTP requests per minute (by default, 60
+  requests per minute, which works out to an average of 1 request per
   second).
 
 You can fully customize the implementation details of any of these strategies
@@ -165,6 +174,7 @@ Documentation
   * {Rack::Throttle::Interval}
   * {Rack::Throttle::Daily}
   * {Rack::Throttle::Hourly}
+  * {Rack::Throttle::PerMinute}
 
 Dependencies
 ------------
