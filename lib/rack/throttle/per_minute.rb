@@ -25,7 +25,6 @@ module Rack; module Throttle
       super
     end
 
-    ##
     def max_per_minute
       @max_per_minute ||= options[:max_per_minute] || options[:max] || 60
     end

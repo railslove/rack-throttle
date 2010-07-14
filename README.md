@@ -97,6 +97,12 @@ Examples
 
     use Rack::Throttle::Interval, :cache => Redis.new, :key_prefix => :throttle
 
+### Using a callback when a visitor is rejected
+
+    # Can be anything that responds to #call
+    callback = Proc.new { puts "help!" }
+    use Rack::Throttle::PerMinute, :max => 10, :on_reject => callback
+
 Throttling Strategies
 ---------------------
 

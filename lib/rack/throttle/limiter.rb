@@ -21,6 +21,7 @@ module Rack; module Throttle
     # @option options [String]  :key_prefix (nil)
     # @option options [Integer] :code       (403)
     # @option options [String]  :message    ("Rate Limit Exceeded")
+    # @option options [Proc]    :on_reject  (Proc.new { puts "hey!" })
     def initialize(app, options = {})
       @app, @options = app, options
     end
@@ -31,7 +32,12 @@ module Rack; module Throttle
     # @see    http://rack.rubyforge.org/doc/SPEC.html
     def call(env)
       request = Rack::Request.new(env)
-      allowed?(request) ? app.call(env) : rate_limit_exceeded
+      if allowed?(request)
+        app.call(env)
+      else
+        call_on_reject
+        rate_limit_exceeded
+      end
     end
 
     ##
@@ -81,6 +87,11 @@ module Rack; module Throttle
     end
 
     protected
+
+    # Calls whatever object is passed with options[:on_reject] on initialize
+    def call_on_reject
+      @options[:on_reject].call if @options[:on_reject]
+    end
 
     ##
     # @return [Hash]
