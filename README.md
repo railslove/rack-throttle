@@ -6,7 +6,18 @@ HTTP requests to Rack applications. You can use `Rack::Throttle` with any
 Ruby web framework based on Rack, including with Ruby on Rails 3.0 and with
 Sinatra.
 
+* <http://github.com/railslove/rack-throttle>
+
+The original version can be found:
 * <http://github.com/datagraph/rack-throttle>
+
+Difference
+----------
+
+There are two main differences:
+
+* Throttling per minute => use Rack::Throttle::PerMinute, :max => 60
+* On reject callback    => use Rack::Throttle::PerMinute, :max => 60, :on_reject => Proc.new { puts "Go Away!" }
 
 Features
 --------

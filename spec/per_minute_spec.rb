@@ -1,12 +1,14 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-def app
-  @target_app ||= example_target_app
-  @app ||= Rack::Throttle::PerMinute.new(@target_app, :max_per_minute => 3)
-end
-
 describe Rack::Throttle::PerMinute do
   include Rack::Test::Methods
+
+  before do
+    def app
+      @target_app ||= example_target_app
+      @app ||= Rack::Throttle::PerMinute.new(@target_app, :max_per_minute => 3)
+    end
+  end
 
   it "should be allowed if not seen this hour" do
     get "/foo"

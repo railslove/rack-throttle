@@ -1,12 +1,14 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-def app
-  @target_app ||= example_target_app
-  @app ||= Rack::Throttle::Daily.new(@target_app, :max_per_day => 3)
-end
-
 describe Rack::Throttle::Daily do
   include Rack::Test::Methods
+
+  before do
+    def app
+      @target_app ||= example_target_app
+      @app ||= Rack::Throttle::Daily.new(@target_app, :max_per_day => 3)
+    end
+  end
 
   it "should be allowed if not seen this day" do
     get "/foo"
