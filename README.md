@@ -17,7 +17,7 @@ Difference
 There are two main differences:
 
 * Throttling per minute => use Rack::Throttle::PerMinute, :max => 60
-* On reject callback    => use Rack::Throttle::PerMinute, :max => 60, :on_reject => Proc.new { puts "Go Away!" }
+* On reject callback    => use Rack::Throttle::PerMinute, :max => 60, :on_reject => Proc.new {|env| puts env.inspect }
 
 Features
 --------
@@ -111,7 +111,8 @@ Examples
 ### Using a callback when a visitor is rejected
 
     # Can be anything that responds to #call
-    callback = Proc.new { puts "help!" }
+    # We also pass "env" as an attribute e.g. object.call(env)
+    callback = Proc.new {|env| puts "help!" }
     use Rack::Throttle::PerMinute, :max => 10, :on_reject => callback
 
 Throttling Strategies
