@@ -54,7 +54,7 @@ describe Rack::Throttle::Limiter do
       @app = Rack::Throttle::Limiter.new(@target_app, :on_reject => proc)
 
       app.stub!(:allowed?).and_return(false)
-      proc.should_receive(:call).once
+      proc.should_receive(:call).once.with(an_instance_of(Hash))
 
       get "/foo"
     end
