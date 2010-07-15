@@ -35,7 +35,7 @@ module Rack; module Throttle
       if allowed?(request)
         app.call(env)
       else
-        call_on_reject
+        call_on_reject(env)
         rate_limit_exceeded
       end
     end
@@ -89,8 +89,8 @@ module Rack; module Throttle
     protected
 
     # Calls whatever object is passed with options[:on_reject] on initialize
-    def call_on_reject
-      @options[:on_reject].call if @options[:on_reject]
+    def call_on_reject(env)
+      @options[:on_reject].call(env) if @options[:on_reject]
     end
 
     ##

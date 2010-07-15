@@ -50,15 +50,13 @@ describe Rack::Throttle::Limiter do
     end
 
     it "should call proc when false" do
-      #proc = mock("test")
-      #@app = Rack::Throttle::Limiter.new(@target_app, :on_reject => proc)
-      #
-      #app.should_receive(:allowed?).and_return(false)
-      #proc.should_receive(:call).once
-      #
-      #get "/foo"
-      #
-      #@app = Rack::Throttle::Limiter.new(@target_app)
+      proc = mock("test")
+      @app = Rack::Throttle::Limiter.new(@target_app, :on_reject => proc)
+
+      app.stub!(:allowed?).and_return(false)
+      proc.should_receive(:call).once
+
+      get "/foo"
     end
   end
 end
